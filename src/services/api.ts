@@ -322,6 +322,7 @@ class ApiService {
   }
 
   async getDiscoveries(): Promise<ApiResponse<{ entities: DiscoveryEntity[] }>> {
+    console.log('111Fetching discoveries from API');
     return this.request<{ entities: DiscoveryEntity[] }>('/discovery/');
   }
 

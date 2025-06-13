@@ -24,12 +24,12 @@ const DiscoveryPage: React.FC = () => {
   const discoveries = discoveriesData?.entities || [];
 
   const handleRunDiscovery = async (id: number) => {
-    setRunningDiscoveries(prev => new Set(prev).add(id));
+    setRunningDiscoveries((prev) => new Set(prev).add(id));
     const result = await runDiscovery(id);
     if (result) {
-      // Simulate discovery completion after a delay
+      console.log(`Discovery ${id} started successfully`);
       setTimeout(() => {
-        setRunningDiscoveries(prev => {
+        setRunningDiscoveries((prev) => {
           const newSet = new Set(prev);
           newSet.delete(id);
           return newSet;
@@ -37,11 +37,15 @@ const DiscoveryPage: React.FC = () => {
         refetch();
       }, 3000);
     } else {
-      setRunningDiscoveries(prev => {
+      console.log(`Failed to start discovery ${id}`);
+      setRunningDiscoveries((prev) => {
         const newSet = new Set(prev);
         newSet.delete(id);
         return newSet;
       });
+      setTimeout(() => {
+        refetch();
+      }, 100);
     }
   };
 
@@ -89,6 +93,9 @@ const DiscoveryPage: React.FC = () => {
     return 'Pending';
   };
 
+  // Sort discoveries by id
+  const sortedDiscoveries = [...discoveries].sort((a, b) => a.id - b.id);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -126,7 +133,7 @@ const DiscoveryPage: React.FC = () => {
           <h2 className="text-lg font-medium text-white">Discovery Jobs</h2>
         </div>
         
-        {discoveries.length === 0 ? (
+        {sortedDiscoveries.length === 0 ? (
           <div className="p-8 text-center">
             <AlertCircle className="w-12 h-12 text-gray-500 mx-auto mb-4" />
             <p className="text-gray-400 mb-2">No discoveries configured</p>
@@ -147,7 +154,7 @@ const DiscoveryPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {discoveries.map((discovery) => (
+                {sortedDiscoveries.map((discovery) => (
                   <tr key={discovery.id} className="border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors">
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
