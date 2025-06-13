@@ -32,15 +32,15 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const menuItems = [
     { icon: <LayoutDashboard size={20} />, label: 'Dashboard', page: 'dashboard' as PageType },
-    { icon: <Server size={20} />, label: 'Devices', page: 'devices' as PageType },
-    { icon: <Activity size={20} />, label: 'Monitoring', page: 'monitoring' as PageType },
-    { icon: <Search size={20} />, label: 'Discovery', page: 'discovery' as PageType, requiresBackend: true },
+    // { icon: <Server size={20} />, label: 'Devices', page: 'devices' as PageType },
+    // { icon: <Activity size={20} />, label: 'Monitoring', page: 'monitoring' as PageType },
     { icon: <Key size={20} />, label: 'Credentials', page: 'credentials' as PageType, requiresBackend: true },
+    { icon: <Search size={20} />, label: 'Discovery', page: 'discovery' as PageType, requiresBackend: true },
     { icon: <Monitor size={20} />, label: 'Provisioned Devices', page: 'provisioned' as PageType, requiresBackend: true },
-    { icon: <Wifi size={20} />, label: 'Network', page: 'network' as PageType },
-    { icon: <Shield size={20} />, label: 'Security', page: 'security' as PageType },
-    { icon: <Bell size={20} />, label: 'Alerts', page: 'alerts' as PageType },
-    { icon: <Settings size={20} />, label: 'Settings', page: 'settings' as PageType },
+    // { icon: <Wifi size={20} />, label: 'Network', page: 'network' as PageType },
+    // { icon: <Shield size={20} />, label: 'Security', page: 'security' as PageType },
+    // { icon: <Bell size={20} />, label: 'Alerts', page: 'alerts' as PageType },
+    // { icon: <Settings size={20} />, label: 'Settings', page: 'settings' as PageType },
   ];
 
   if (!open) {

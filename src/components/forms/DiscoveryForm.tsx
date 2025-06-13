@@ -35,7 +35,12 @@ const DiscoveryForm: React.FC<DiscoveryFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await createDiscovery(formData);
+    const result = await createDiscovery({
+      ...formData,
+      credential_id: Number(formData.credential_id),
+      port_no: Number(formData.port_no),
+      wait_time: Number(formData.wait_time)
+    });
     if (result) {
       onSuccess();
       onClose();

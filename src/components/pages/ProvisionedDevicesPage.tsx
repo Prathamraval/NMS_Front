@@ -124,11 +124,27 @@ const ProvisionedDevicesPage: React.FC = () => {
   const chartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
     plugins: {
       legend: {
         position: 'top' as const,
         labels: {
           color: '#9CA3AF'
+        }
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: '#1F2937',
+        borderColor: '#374151',
+        borderWidth: 1,
+        titleColor: '#F9FAFB',
+        bodyColor: '#F9FAFB',
+        callbacks: {
+          title: (items) => items[0]?.label || '',
+          label: (item) => `${item.dataset.label}: ${item.formattedValue}`
         }
       }
     },
@@ -184,7 +200,7 @@ const ProvisionedDevicesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#181f2a]">
-      <div className="space-y-6 p-6 max-w-6xl mx-auto">
+      <div className="space-y-6 p-6">
         <div>
           <h1 className="text-2xl font-bold text-white">Provisioned Devices</h1>
           <p className="text-gray-400">Monitor and manage provisioned devices</p>
@@ -216,7 +232,7 @@ const ProvisionedDevicesPage: React.FC = () => {
             ) : (
               <>
                 {/* System Info Card */}
-                <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+                <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 mb-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-lg font-medium text-white">System Information</h2>
                     <div className="text-gray-400 text-sm">
@@ -258,10 +274,48 @@ const ProvisionedDevicesPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                {/* Stat Card Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+                  <div className="bg-gray-900 rounded-lg border border-gray-700 p-4 flex items-center gap-4">
+                    <Cpu className="w-6 h-6 text-purple-400" />
+                    <div>
+                      <div className="text-sm text-gray-400">CPU Usage</div>
+                      <div className="text-xl font-bold text-white">{latest.data['system.cpu.percent'] != null ? `${latest.data['system.cpu.percent'].toFixed(1)}%` : 'N/A'}</div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-900 rounded-lg border border-gray-700 p-4 flex items-center gap-4">
+                    <HardDrive className="w-6 h-6 text-blue-400" />
+                    <div>
+                      <div className="text-sm text-gray-400">Memory Usage</div>
+                      <div className="text-xl font-bold text-white">{latest.data['system.memory.used.percent'] != null ? `${latest.data['system.memory.used.percent'].toFixed(1)}%` : 'N/A'}</div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-900 rounded-lg border border-gray-700 p-4 flex items-center gap-4">
+                    <HardDrive className="w-6 h-6 text-emerald-400" />
+                    <div>
+                      <div className="text-sm text-gray-400">Disk Usage</div>
+                      <div className="text-xl font-bold text-white">{latest.data['system.disk.used.percent'] != null ? `${latest.data['system.disk.used.percent'].toFixed(1)}%` : 'N/A'}</div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-900 rounded-lg border border-gray-700 p-4 flex items-center gap-4">
+                    <Clock className="w-6 h-6 text-yellow-400" />
+                    <div>
+                      <div className="text-sm text-gray-400">Uptime</div>
+                      <div className="text-xl font-bold text-white">{latest.data.uptime || 'N/A'}</div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-900 rounded-lg border border-gray-700 p-4 flex items-center gap-4">
+                    <Server className="w-6 h-6 text-green-400" />
+                    <div>
+                      <div className="text-sm text-gray-400">OS</div>
+                      <div className="text-xl font-bold text-white">{latest.data['system.os.name'] || 'N/A'}</div>
+                    </div>
+                  </div>
+                </div>
                 {/* Resource Usage Graphs */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6">
                   {/* CPU Usage Graph */}
-                  <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+                  <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 h-96">
                     <div className="flex items-center gap-3 mb-4">
                       <Cpu className="w-5 h-5 text-purple-400" />
                       <h3 className="text-white font-medium">CPU Usage</h3>
@@ -271,7 +325,7 @@ const ProvisionedDevicesPage: React.FC = () => {
                     </div>
                   </div>
                   {/* Memory Usage Graph */}
-                  <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+                  <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 h-96">
                     <div className="flex items-center gap-3 mb-4">
                       <HardDrive className="w-5 h-5 text-blue-400" />
                       <h3 className="text-white font-medium">Memory Usage</h3>
@@ -281,7 +335,7 @@ const ProvisionedDevicesPage: React.FC = () => {
                     </div>
                   </div>
                   {/* Disk Usage Graph */}
-                  <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+                  <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 h-96">
                     <div className="flex items-center gap-3 mb-4">
                       <HardDrive className="w-5 h-5 text-emerald-400" />
                       <h3 className="text-white font-medium">Disk Usage</h3>
@@ -291,7 +345,7 @@ const ProvisionedDevicesPage: React.FC = () => {
                     </div>
                   </div>
                   {/* Load Average Graph */}
-                  <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+                  <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 h-96">
                     <div className="flex items-center gap-3 mb-4">
                       <BarChart2 className="w-5 h-5 text-yellow-400" />
                       <h3 className="text-white font-medium">Load Average</h3>

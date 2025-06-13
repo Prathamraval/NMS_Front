@@ -99,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({
         </div>
         
         <div className="flex items-center gap-4">
-          <TimeRangeSelector 
+          {/* <TimeRangeSelector 
             selected={timeRange} 
             onChange={setTimeRange} 
           />
@@ -115,7 +115,7 @@ const Header: React.FC<HeaderProps> = ({
           <button className="flex items-center gap-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white text-sm transition-colors">
             <Download size={16} />
             <span>Export</span>
-          </button>
+          </button> */}
         </div>
       </div>
     </header>
