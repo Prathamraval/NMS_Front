@@ -4,16 +4,21 @@ import { useApiData, useApiMutation } from '../../hooks/useApi';
 import { apiService, DiscoveryEntity } from '../../services/api';
 import DiscoveryForm from '../forms/DiscoveryForm';
 import { format } from 'date-fns';
+import Notification from '../Notification';
 
 const DiscoveryPage: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [runningDiscoveries, setRunningDiscoveries] = useState<Set<number>>(new Set());
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: 'success' | 'error';
+  } | null>(null);
 
   const { data: discoveriesData, loading, error, refetch } = useApiData(
     () => apiService.getDiscoveries()
   );
 
-  const { mutate: runDiscovery, loading: runLoading } = useApiMutation(
+  const { mutate: runDiscovery } = useApiMutation(
     (id: number) => apiService.runDiscovery(id)
   );
 
@@ -24,28 +29,39 @@ const DiscoveryPage: React.FC = () => {
   const discoveries = discoveriesData?.entities || [];
 
   const handleRunDiscovery = async (id: number) => {
-    setRunningDiscoveries((prev) => new Set(prev).add(id));
-    const result = await runDiscovery(id);
-    if (result) {
-      console.log(`Discovery ${id} started successfully`);
-      setTimeout(() => {
-        setRunningDiscoveries((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
+    try {
+      setRunningDiscoveries(prev => new Set([...prev, id]));
+      
+      const response = await runDiscovery(id);
+      
+      if (!response) {
+        throw new Error('No response received from server');
+      }
+
+      // Show acceptance message
+      if (response.status === 'accepted') {
+        setNotification({
+          message: response.message,
+          type: 'success'
         });
-        refetch();
-      }, 3000);
-    } else {
-      console.log(`Failed to start discovery ${id}`);
-      setRunningDiscoveries((prev) => {
+      } else {
+        // Show final response message
+        setNotification({
+          message: response.message,
+          type: response.success === false ? 'error' : 'success'
+        });
+      }
+    } catch (error) {
+      setNotification({
+        message: error instanceof Error ? error.message : 'Failed to run discovery',
+        type: 'error'
+      });
+    } finally {
+      setRunningDiscoveries(prev => {
         const newSet = new Set(prev);
         newSet.delete(id);
         return newSet;
       });
-      setTimeout(() => {
-        refetch();
-      }, 100);
     }
   };
 
@@ -189,7 +205,7 @@ const DiscoveryPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleRunDiscovery(discovery.id)}
-                          disabled={runLoading || runningDiscoveries.has(discovery.id)}
+                          disabled={runningDiscoveries.has(discovery.id)}
                           className="flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-md text-sm transition-colors"
                           title="Run discovery"
                         >
@@ -226,6 +242,14 @@ const DiscoveryPage: React.FC = () => {
         onClose={() => setIsFormOpen(false)}
         onSuccess={() => refetch()}
       />
+
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
     </div>
   );
 };
