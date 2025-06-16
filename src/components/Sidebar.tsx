@@ -107,13 +107,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
         ))}
       </div>
-      <div className="mt-auto py-4 border-t border-gray-700">
-        <button className="px-4 py-3 w-full flex items-center gap-3 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors duration-200">
-          <LogOut size={20} />
-          <span>Log out</span>
-        </button>
       </div>
-    </div>
   );
 };
 

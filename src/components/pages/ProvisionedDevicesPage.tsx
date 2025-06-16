@@ -54,6 +54,7 @@ const ProvisionedDevicesPage: React.FC = () => {
     diskUsage: [],
     loadAverage: []
   });
+  const [searchTerm, setSearchTerm] = useState('');
 
   const { data: devicesData, loading, error, refetch } = useApiData(
     () => {
@@ -100,6 +101,12 @@ const ProvisionedDevicesPage: React.FC = () => {
 
   const devices = devicesData?.entities || [];
   console.log('Devices data:', devices);
+
+  // Filter devices based on search term
+  const filteredDevices = devices.filter(device =>
+    device.discovery_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    device.ip_address.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleStatusToggle = async (monitorId: number, currentStatus: boolean) => {
     try {
@@ -204,6 +211,15 @@ const ProvisionedDevicesPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-white">Provisioned Devices</h1>
           <p className="text-gray-400">Monitor and manage provisioned devices</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Search by name or IP..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
         </div>
         {selectedDevice ? (
           <div className="space-y-6">
@@ -365,10 +381,12 @@ const ProvisionedDevicesPage: React.FC = () => {
                 <h2 className="text-lg font-medium text-white">Devices</h2>
               </div>
               <div className="divide-y divide-gray-700">
-                {devices.length === 0 ? (
-                  <div className="p-8 text-center text-gray-400">No provisioned devices found.</div>
+                {filteredDevices.length === 0 ? (
+                  <div className="p-8 text-center text-gray-400">
+                    {searchTerm ? 'No matching provisioned devices found.' : 'No provisioned devices found.'}
+                  </div>
                 ) : (
-                  devices.map((device) => (
+                  filteredDevices.map((device) => (
                     <div
                       key={device.monitor_id}
                       className={`p-4 cursor-pointer hover:bg-gray-700/30 transition-colors`}
