@@ -14,9 +14,11 @@ const DiscoveryPage: React.FC = () => {
     type: 'success' | 'error';
   } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState<'notProvisioned' | 'provisioned'>('notProvisioned');
 
   const { data: discoveriesData, loading, error, refetch } = useApiData(
-    () => apiService.getDiscoveries()
+    () => apiService.getDiscoveriesByProvisionedStatus(activeTab === 'provisioned'),
+    [activeTab]
   );
 
   const { mutate: runDiscovery } = useApiMutation(
@@ -159,16 +161,42 @@ const DiscoveryPage: React.FC = () => {
         </div>
       </div>
 
+      <div className="flex border-b border-gray-700 mb-6">
+        <button
+          onClick={() => setActiveTab('notProvisioned')}
+          className={`py-2 px-4 text-sm font-medium ${activeTab === 'notProvisioned' ? 'text-white border-b-2 border-indigo-500' : 'text-gray-400 hover:text-white'} transition-colors duration-200`}
+        >
+          Not Provisioned Discoveries
+        </button>
+        <button
+          onClick={() => setActiveTab('provisioned')}
+          className={`py-2 px-4 text-sm font-medium ${activeTab === 'provisioned' ? 'text-white border-b-2 border-indigo-500' : 'text-gray-400 hover:text-white'} transition-colors duration-200`}
+        >
+          Provisioned Discoveries
+        </button>
+      </div>
+
       <div className="bg-gray-800 rounded-lg border border-gray-700">
         <div className="p-4 border-b border-gray-700">
-          <h2 className="text-lg font-medium text-white">Discovery Jobs</h2>
+          <h2 className="text-lg font-medium text-white">
+            {activeTab === 'notProvisioned' ? 'Not Provisioned Discovery Jobs' : 'Provisioned Discovery Jobs'}
+          </h2>
         </div>
         
         {filteredDiscoveries.length === 0 ? (
           <div className="p-8 text-center">
             <AlertCircle className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-            <p className="text-gray-400 mb-2">No discoveries configured</p>
-            <p className="text-gray-500 text-sm">Create your first discovery to start monitoring devices</p>
+            <p className="text-gray-400 mb-2">
+              {searchTerm 
+                ? 'No matching discoveries found.' 
+                : activeTab === 'notProvisioned' 
+                  ? 'No not-provisioned discoveries configured.' 
+                  : 'No provisioned discoveries configured.'
+              }
+            </p>
+            {!searchTerm && activeTab === 'notProvisioned' && (
+              <p className="text-gray-500 text-sm">Create your first discovery to start monitoring devices</p>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -231,7 +259,8 @@ const DiscoveryPage: React.FC = () => {
                           )}
                           Run
                         </button>
-                        {discovery.status && (
+                        {/* Provision button only for Not Provisioned tab and if status is Reachable */}
+                        {activeTab === 'notProvisioned' && discovery.status && (
                           <button
                             onClick={() => handleProvision(discovery.id)}
                             disabled={provisionLoading}
@@ -256,6 +285,7 @@ const DiscoveryPage: React.FC = () => {
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
         onSuccess={() => refetch()}
+        editData={undefined} // ensure editData is not passed to new form by mistake
       />
 
       {notification && (

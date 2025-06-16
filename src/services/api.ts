@@ -378,6 +378,10 @@ class ApiService {
     return this.request<{ entities: DiscoveryEntity[] }>('/discovery/');
   }
 
+  async getDiscoveriesByProvisionedStatus(isProvisioned: boolean): Promise<ApiResponse<{ entities: DiscoveryEntity[] }>> {
+    return this.request<{ entities: DiscoveryEntity[] }>(`/discovery/provisioned/${isProvisioned}`);
+  }
+
   async getDiscoveryById(id: number): Promise<ApiResponse<DiscoveryEntity>> {
     return this.request<DiscoveryEntity>(`/discovery/${id}`);
   }
