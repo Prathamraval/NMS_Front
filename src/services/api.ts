@@ -159,7 +159,7 @@
 
 // export const apiService = new ApiService();
 
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+const API_BASE_URL = 'http://10.20.41.5:8081/api/v1';
 
 export interface ApiResponse<T> {
   success: boolean;

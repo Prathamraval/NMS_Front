@@ -5,9 +5,40 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Network Monitoring Dashboard</title>
-  </head>
-  <body>
+
+    <!-- <script>
+  (function(s,t,a,n){s[t]||(s[t]=a,n=s[a]=function(){n.q.push(arguments)},
+  n.q=[],n.v=2,n.l=1*new Date)})(window,"InstanaEumObject","ineum");
+
+  ineum('reportingUrl', 'https://eum-blue-saas.instana.io');
+  ineum('key', 'i3CxtjXoQFmKkwlMObE9bg');
+  ineum('trackSessions');
+  ineum('autoPageDetection', { titleAsPageName: true });
+</script>
+<script defer crossorigin="anonymous" src="https://eum.instana.io/1.7.5/eum.min.js" 
+ integrity="sha384-HJjb3vveemdYNUfM1D28dTeXpPPbwPWJinH9ldaGt3KxCO0PNRc4Jb3oQIxMmJMk"></script> -->
     <div id="root"></div>
+
+  
+  </head>
+  
+  <body>
+    <!-- <script src="https://unpkg.com/skywalking-client-js@0.12.0/dist/browser.min.js"></script>
+<script>
+  window.addEventListener('load', () => {
+    ClientMonitor.start({
+      collector: 'http://localhost:11800',
+      service: 'vite-react-app',
+      serviceVersion: '1.0.0',
+      pagePath: window.location.pathname,
+      autoTracePerf: true,
+      enableSPA: true,
+      traceTimeThreshold: 5000,
+    });
+  });
+</script> -->
+
+  
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
