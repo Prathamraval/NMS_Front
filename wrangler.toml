@@ -4,4 +4,4 @@ workers_dev = true
 main = "workers-site/index.js"
 
 [site]
-bucket = "./dist" 
+bucket = "./dist"  
